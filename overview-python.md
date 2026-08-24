@@ -1,5 +1,36 @@
 # Real-Time Traffic Monitoring & Alerting System
 
+- [Real-Time Traffic Monitoring \& Alerting System](#real-time-traffic-monitoring--alerting-system)
+  - [(Kafka + Python + PySpark)](#kafka--python--pyspark)
+  - [1. Project Overview](#1-project-overview)
+  - [2. High-Level Architecture](#2-high-level-architecture)
+  - [3. Kafka Topics](#3-kafka-topics)
+  - [4. Data Model](#4-data-model)
+    - [Raw Sensor Event (JSON)](#raw-sensor-event-json)
+    - [Processed Event (JSON)](#processed-event-json)
+    - [Alert Event (JSON)](#alert-event-json)
+  - [5. Technologies Used](#5-technologies-used)
+    - [Core Infrastructure](#core-infrastructure)
+    - [Processing Layer](#processing-layer)
+    - [Python Components](#python-components)
+    - [Storage (Optional)](#storage-optional)
+    - [Deployment \& Ops](#deployment--ops)
+  - [6. System Workflow](#6-system-workflow)
+    - [Step 1 — Data Ingestion](#step-1--data-ingestion)
+    - [Step 2 — Distributed Stream Processing](#step-2--distributed-stream-processing)
+    - [Step 3 — Alerting](#step-3--alerting)
+    - [Step 4 — Visualization](#step-4--visualization)
+  - [7. PySpark Streaming Logic (Conceptual)](#7-pyspark-streaming-logic-conceptual)
+    - [Sliding Window Aggregation](#sliding-window-aggregation)
+    - [Congestion Score Formula](#congestion-score-formula)
+    - [Alert Rule](#alert-rule)
+  - [8. Optional Enhancements](#8-optional-enhancements)
+    - [Machine Learning](#machine-learning)
+    - [Scaling](#scaling)
+    - [Persistence](#persistence)
+  - [9. Directory Structure](#9-directory-structure)
+  - [10. Summary](#10-summary)
+
 ## (Kafka + Python + PySpark)
 
 ## 1. Project Overview
@@ -31,7 +62,7 @@ A distributed, real-time traffic analytics system that ingests live sensor data,
    - Publishes alerts to Kafka topic `traffic_alerts`.
 
 4. **Dashboard (Optional)**
-   
+
    - Flask or FastAPI app visualizing:
      - Live traffic flow
      - Congestion zones
