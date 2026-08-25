@@ -201,13 +201,9 @@ Dashboard displays:
 
 #### Congestion score formula
 
-
-
 [
 text{congestion_score} = frac{text{max_speed} - text{window_avg_speed}}{text{max_speed}}
 ]
-
-
 
 #### Alert rule (Java-style pseudocode)
 
