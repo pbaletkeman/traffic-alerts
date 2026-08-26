@@ -129,9 +129,9 @@ Set up the complete Kafka infrastructure including broker configuration, Schema 
 
 ### Epic 1: User Stories
 
-- As a developer, I want Kafka brokers configured with proper replication so that data is durable
-- As a developer, I want topics pre-created with correct partitioning so that data flows correctly
-- As a developer, I want Schema Registry running so that I can validate message formats
+- As a developer, I want Kafka brokers configured with proper replication so that data is durable **(10 - 15 hours)**
+- As a developer, I want topics pre-created with correct partitioning so that data flows correctly **(8 - 12 hours)**
+- As a developer, I want Schema Registry running so that I can validate message formats **(6 - 10 hours)**
 
 ### Epic 1: Tasks
 
@@ -174,9 +174,9 @@ Build a production-grade Java Kafka producer that publishes raw sensor events to
 
 ### Epic 2: User Stories
 
-- As a system, I want sensor events published to Kafka so that downstream processors can consume them
-- As a developer, I want proper error handling so that transient failures don't lose data
-- As an operator, I want metrics on producer performance so that I can tune throughput
+- As a system, I want sensor events published to Kafka so that downstream processors can consume them **(15 - 25 hours)**
+- As a developer, I want proper error handling so that transient failures don't lose data **(10 - 20 hours)**
+- As an operator, I want metrics on producer performance so that I can tune throughput **(8 - 12 hours)**
 
 ### Epic 2: Tasks
 
@@ -222,9 +222,9 @@ Implement Spark Structured Streaming job that reads from `traffic_raw`, performs
 
 ### Epic 3: User Stories
 
-- As a data analyst, I want windowed aggregations so that I can see traffic trends over time
-- As a data scientist, I want anomaly detection so that unusual patterns are flagged
-- As an operator, I want watermarks so that late-arriving data is handled correctly
+- As a data analyst, I want windowed aggregations so that I can see traffic trends over time **(20 - 30 hours)**
+- As a data scientist, I want anomaly detection so that unusual patterns are flagged **(15 - 25 hours)**
+- As an operator, I want watermarks so that late-arriving data is handled correctly **(8 - 12 hours)**
 
 ### Epic 3: Tasks
 
@@ -269,9 +269,9 @@ Build Kafka Streams application that consumes from `traffic_processed`, maintain
 
 ### Epic 4: User Stories
 
-- As a system, I want real-time alerts generated so that stakeholders are notified of congestion
-- As an operator, I want exactly-once processing so that no alerts are duplicated or lost
-- As a developer, I want state stores so that historical trends are available for analysis
+- As a system, I want real-time alerts generated so that stakeholders are notified of congestion **(20 - 30 hours)**
+- As an operator, I want exactly-once processing so that no alerts are duplicated or lost **(15 - 25 hours)**
+- As a developer, I want state stores so that historical trends are available for analysis **(12 - 20 hours)**
 
 ### Epic 4: Tasks
 
@@ -316,9 +316,9 @@ Build Java alert consumer that processes alerts from Kafka, applies business rul
 
 ### Epic 5: User Stories
 
-- As a system, I want business rules applied to alerts so that only actionable notifications are sent
-- As an operator, I want alerts persisted to database so that historical analysis is possible
-- As a dashboard user, I want real-time alert updates so that I can respond quickly
+- As a system, I want business rules applied to alerts so that only actionable notifications are sent **(15 - 25 hours)**
+- As an operator, I want alerts persisted to database so that historical analysis is possible **(10 - 15 hours)**
+- As a dashboard user, I want real-time alert updates so that I can respond quickly **(12 - 20 hours)**
 
 ### Epic 5: Tasks
 
@@ -362,9 +362,9 @@ Implement Kafka Connect source and sink connectors for PostgreSQL integration, e
 
 ### Epic 6: User Stories
 
-- As a system, I want road metadata available in Kafka so that enrichments can occur
-- As an operator, I want alerts persisted to PostgreSQL so that historical queries are possible
-- As a developer, I want connector configurations managed declaratively so that changes are version-controlled
+- As a system, I want road metadata available in Kafka so that enrichments can occur **(12 - 18 hours)**
+- As an operator, I want alerts persisted to PostgreSQL so that historical queries are possible **(10 - 15 hours)**
+- As a developer, I want connector configurations managed declaratively so that changes are version-controlled **(8 - 12 hours)**
 
 ### Epic 6: Tasks
 
@@ -408,9 +408,9 @@ Build Spring Boot backend API and React frontend dashboard to visualize live tra
 
 ### Epic 7: User Stories
 
-- As a user, I want to see live traffic flow so that I can monitor current conditions
-- As a user, I want to see congestion heatmaps so that I can identify problem areas
-- As an operator, I want to see Kafka metrics so that I can monitor system health
+- As a user, I want to see live traffic flow so that I can monitor current conditions **(25 - 40 hours)**
+- As a user, I want to see congestion heatmaps so that I can identify problem areas **(20 - 30 hours)**
+- As an operator, I want to see Kafka metrics so that I can monitor system health **(12 - 20 hours)**
 
 ### Epic 7: Tasks
 
@@ -456,9 +456,9 @@ Implement comprehensive security including SSL encryption, SASL/SCRAM authentica
 
 ### Epic 8: User Stories
 
-- As an operator, I want SSL encryption so that data is protected in transit
-- As an administrator, I want SASL authentication so that only authorized clients can connect
-- As a security officer, I want ACLs so that access is controlled per topic
+- As an operator, I want SSL encryption so that data is protected in transit **(15 - 25 hours)**
+- As an administrator, I want SASL authentication so that only authorized clients can connect **(12 - 20 hours)**
+- As a security officer, I want ACLs so that access is controlled per topic **(10 - 15 hours)**
 
 ### Epic 8: Tasks
 
@@ -504,9 +504,9 @@ Set up comprehensive observability with Prometheus metrics collection, Grafana d
 
 ### Epic 9: User Stories
 
-- As an operator, I want Prometheus collecting metrics so that I can monitor system health
-- As an operator, I want Grafana dashboards so that I can visualize trends
-- As an on-call engineer, I want alerting rules so that I'm notified of issues
+- As an operator, I want Prometheus collecting metrics so that I can monitor system health **(10 - 15 hours)**
+- As an operator, I want Grafana dashboards so that I can visualize trends **(15 - 25 hours)**
+- As an on-call engineer, I want alerting rules so that I'm notified of issues **(8 - 12 hours)**
 
 ### Epic 9: Tasks
 
@@ -551,9 +551,9 @@ Implement comprehensive testing strategy including unit tests, integration tests
 
 ### Epic 10: User Stories
 
-- As a developer, I want unit tests so that code changes don't break functionality
-- As a developer, I want integration tests so that component interactions work correctly
-- As an operator, I want load tests so that I can verify system capacity
+- As a developer, I want unit tests so that code changes don't break functionality **(15 - 25 hours)**
+- As a developer, I want integration tests so that component interactions work correctly **(20 - 30 hours)**
+- As an operator, I want load tests so that I can verify system capacity **(12 - 20 hours)**
 
 ### Epic 10: Tasks
 
@@ -601,9 +601,9 @@ Implement Docker containerization, Docker Compose orchestration, and CI/CD pipel
 
 ### Epic 11: User Stories
 
-- As a developer, I want Docker images so that deployment is consistent across environments
-- As an operator, I want Docker Compose so that I can run the full stack locally
-- As a team, I want CI/CD so that code changes are automatically tested and deployed
+- As a developer, I want Docker images so that deployment is consistent across environments **(12 - 20 hours)**
+- As an operator, I want Docker Compose so that I can run the full stack locally **(10 - 15 hours)**
+- As a team, I want CI/CD so that code changes are automatically tested and deployed **(20 - 30 hours)**
 
 ### Epic 11: Tasks
 
@@ -650,9 +650,9 @@ Create comprehensive documentation including architecture diagrams, API document
 
 ### Epic 12: User Stories
 
-- As a new developer, I want onboarding documentation so that I can contribute quickly
-- As an operator, I want runbooks so that I can handle operational issues
-- As a stakeholder, I want architecture diagrams so that I can understand the system
+- As a new developer, I want onboarding documentation so that I can contribute quickly **(12 - 18 hours)**
+- As an operator, I want runbooks so that I can handle operational issues **(10 - 15 hours)**
+- As a stakeholder, I want architecture diagrams so that I can understand the system **(8 - 12 hours)**
 
 ### Epic 12: Tasks
 
@@ -685,20 +685,21 @@ Create comprehensive documentation including architecture diagrams, API document
 
 ## Epic Summary
 
-| Epic | Title                | Priority | Sprints  | Dependencies |
-| ---- | -------              | -------- |--------- | ------------ |
-| 1    | Kafka Infrastructure | Critical | 1-2      | None         |
-| 2    | Java Kafka Producer  | Critical | 2-3      | Epic 1       |
-| 3    | Spark Streaming      | High     | 3-4      | Epic 1, 2    |
-| 4    | Kafka Streams        | High     | 4-5      | Epic 1, 3    |
-| 5    | Alert Engine         | High     | 5-6      | Epic 1, 4    |
-| 6    | Kafka Connect        | Medium   | 6-7      | Epic 1       |
-| 7    | Dashboard            | Medium   | 7-9      | Epic 5       |
-| 8    | Security             | High     | 3-5      | Epic 1       |
-| 9    | Observability        | Medium   | 6-8      | Epic 1       |
-| 10   | Testing              | High     | 4-7      | All epics    |
-| 11   | Deployment & CI/CD   | Medium   | 8-10     | All epics    |
-| 12   | Documentation        | Medium   | 9-10     | All epics    |
+| Epic | Title                | Priority | Sprints  | Dependencies | Hours        |
+| ---- | -------              | -------- |--------- | ------------ | ------------ |
+| 1    | Kafka Infrastructure | Critical | 1-2      | None         | 24 - 37      |
+| 2    | Java Kafka Producer  | Critical | 2-3      | Epic 1       | 33 - 57      |
+| 3    | Spark Streaming      | High     | 3-4      | Epic 1, 2    | 43 - 67      |
+| 4    | Kafka Streams        | High     | 4-5      | Epic 1, 3    | 47 - 75      |
+| 5    | Alert Engine         | High     | 5-6      | Epic 1, 4    | 37 - 60      |
+| 6    | Kafka Connect        | Medium   | 6-7      | Epic 1       | 30 - 45      |
+| 7    | Dashboard            | Medium   | 7-9      | Epic 5       | 57 - 90      |
+| 8    | Security             | High     | 3-5      | Epic 1       | 37 - 60      |
+| 9    | Observability        | Medium   | 6-8      | Epic 1       | 33 - 52      |
+| 10   | Testing              | High     | 4-7      | All epics    | 47 - 75      |
+| 11   | Deployment & CI/CD   | Medium   | 8-10     | All epics    | 42 - 65      |
+| 12   | Documentation        | Medium   | 9-10     | All epics    | 30 - 45      |
+|      | **TOTAL**            |          |          |              | **478 - 763**|
 
 ---
 ✅
