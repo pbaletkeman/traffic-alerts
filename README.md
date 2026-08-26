@@ -48,7 +48,7 @@ The system is designed for **scalability** (partition Kafka topics, scale Spark 
 ## Architecture
 
 ```mermaid
-flowchart LR
+flowchart
     A[Java Kafka Producer] -->|sensor events| B(Kafka: traffic_raw)
     B --> C[Spark Structured Streaming Processor]
     C -->|windowed analytics| D(Kafka: traffic_processed)
