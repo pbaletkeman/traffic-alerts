@@ -1,23 +1,23 @@
 # Real-Time Traffic Monitoring & Alerting System
 
-(Kafka + Java + Spark Structured Streaming + Kafka Streams + Kafka Connect + Security + Observability)
+(Kafka + Java + Kafka Streams + Kafka Connect + Security + Observability)
 
 ## 1. Project Overview
 
-A distributed, real-time traffic analytics system built to demonstrate end‑to‑end Kafka developer proficiency. It ingests live sensor data, processes it using Spark Structured Streaming and Kafka Streams, applies alerting logic in Java, integrates with Kafka Connect, and exposes full observability, testing, and security patterns required for the Confluent Certified Developer exam.
+A distributed, real-time traffic analytics system built to demonstrate end-to-end Kafka developer proficiency. It ingests live sensor data, processes it using Kafka Streams, applies alerting logic, integrates with Kafka Connect, and exposes full observability, testing, and security patterns required for the Confluent Certified Developer exam.
 
 **[Project Epics](project-epics.md)**
 
-This version covers:
+This version covers all six exam sections:
 
-- Kafka fundamentals (topics, partitions, offsets, retention, replication)
-- Kafka client development (producers, consumers, batching, compression)
-- Kafka Streams (state stores, windowing, exactly-once semantics)
-- Kafka Connect (source + sink connectors)
-- Serialization (Avro, JSON, Protobuf)
-- Security (SSL, SASL, ACLs)
-- Application testing (mocking, embedded Kafka)
-- Observability (metrics, logging, monitoring)
+| Exam Section | % | Project Coverage |
+|---|---|---|
+| Kafka Fundamentals | 23% | Topics, partitions, offsets, retention, replication, CLI tools |
+| Application Development | 28% | Producer, consumer, serialization, error handling, Admin API |
+| Kafka Streams | 12% | State stores, windowing, exactly-once, KTables |
+| Kafka Connect | 15% | Source + sink connectors, CDC concepts |
+| Application Testing | 8% | Embedded Kafka, Testcontainers, topology tests |
+| Application Observability | 13% | JMX metrics, Prometheus, Grafana |
 
 ## 2. High-level architecture
 
@@ -28,49 +28,36 @@ This version covers:
      - Compression (lz4/snappy)
      - Batch + linger tuning
      - SSL/SASL security
+     - Avro serialization with Schema Registry
 
-2. **Spark Structured Streaming Processor (Java)**
+2. **Kafka Streams Processor (Java)**
    - Reads from `traffic_raw`.
-   - Performs distributed analytics:
-     - Sliding windows
-     - Watermarking
-     - Aggregations
-     - ML-based anomaly detection
+   - Performs all stream processing:
+     - Time-windowed aggregations (tumbling + sliding)
+     - State stores for congestion history per road segment
+     - Congestion score calculation
+     - Alert emission when thresholds exceeded
    - Writes enriched events to `traffic_processed`.
-
-3. **Kafka Streams Processor (Java)**
-   - Consumes `traffic_processed`.
-   - Maintains state stores for:
-     - Road congestion trends
-     - Speed anomaly detection
    - Emits alerts to `traffic_alerts`.
    - Uses:
-     - Exactly-once semantics
+     - Exactly-once semantics (`exactly_once_v2`)
      - KTables + state stores
-     - Stream-stream joins (optional)
+     - Dead-letter topic routing
 
-4. **Java Alert Engine**
-   - Consumes `traffic_alerts`.
-   - Applies business rules.
-   - Sends notifications to:
-     - Kafka Connect sink (PostgreSQL)
-     - Dashboard API
-
-5. **Kafka Connect Layer**
+3. **Kafka Connect Layer**
    - Source connector: ingest static road metadata from PostgreSQL → Kafka.
-   - Sink connector: store alerts into PostgreSQL or MongoDB.
+   - Sink connector: store alerts into PostgreSQL.
 
-6. **Dashboard (Spring Boot / React)**
-   - Visualizes:
-     - Live traffic flow
-     - Congestion zones
-     - Alerts
-     - Kafka metrics
+4. **Dashboard (Spring Boot + Thymeleaf)**
+   - Simple server-rendered dashboard showing:
+     - Live traffic flow (polling-based)
+     - Current alerts
+     - Basic Kafka metrics
 
-7. **Observability**
+5. **Observability**
    - Prometheus + Grafana
    - JMX metrics for Kafka clients
-   - Spark metrics sink
+   - Alerting rules for system health
 
 ## 3. Kafka topics
 
@@ -90,7 +77,7 @@ Includes:
 
 ## 4. Data model
 
-Supports JSON, Avro, and Protobuf via Schema Registry.
+Supports JSON and Avro via Schema Registry.
 
 ### Raw sensor event (JSON)
 
@@ -111,7 +98,8 @@ Supports JSON, Avro, and Protobuf via Schema Registry.
   "road_segment": "R45",
   "window_avg_speed": 42.1,
   "congestion_score": 0.78,
-  "timestamp": "2026-08-15T18:26:05Z"
+  "window_start": "2026-08-15T18:26:00Z",
+  "window_end": "2026-08-15T18:26:10Z"
 }
 ```
 
@@ -131,28 +119,23 @@ Supports JSON, Avro, and Protobuf via Schema Registry.
 ### Core infrastructure
 
 - Apache Kafka (topics, partitions, offsets, retention)
-- Zookeeper / KRaft
+- KRaft mode (no Zookeeper)
 - Schema Registry
 - Kafka Connect
 
 ### Processing layer
 
-- Spark Structured Streaming (Java API)
-- Kafka Streams (Java)
-- Spark SQL
-- Spark MLlib (optional)
+- Kafka Streams (Java) — all stream processing, windowing, state stores
 
 ### Java components
 
 - Kafka Java client (Apache or Confluent)
-- Spring Boot / Jakarta EE
-- JUnit + Testcontainers + Embedded Kafka
+- Spring Boot (dashboard REST + Thymeleaf)
+- JUnit 5 + Testcontainers + Embedded Kafka
 
 ### Storage
 
 - PostgreSQL (sink connector)
-- MongoDB (optional)
-- Delta Lake (optional)
 
 ### Security
 
@@ -165,13 +148,11 @@ Supports JSON, Avro, and Protobuf via Schema Registry.
 - Prometheus
 - Grafana
 - JMX metrics
-- Kafka client metrics
 
 ### Deployment & ops
 
 - Docker / Docker Compose
-- Kubernetes (optional)
-- CI/CD with GitHub Actions
+- GitHub Actions CI/CD
 
 ## 6. System workflow
 
@@ -186,85 +167,42 @@ Includes:
 - Batching
 - Retryable vs non-retryable error handling
 
-### Step 2 — Distributed stream processing (Spark)
+### Step 2 — Kafka Streams processing
 
-Spark reads `traffic_raw` → applies:
+Kafka Streams reads `traffic_raw` → applies:
 
-- Sliding windows
-- Watermarking
-- Aggregations
-- ML anomaly detection
+- Time-windowed aggregation (10s window, 5s slide)
+- State store tracking per road segment
+- Congestion score calculation
+- Alert emission when threshold exceeded
 
-Outputs → `traffic_processed`.
+Outputs:
+- Enriched events → `traffic_processed`
+- Alerts → `traffic_alerts`
 
-### Step 3 — Kafka Streams processing
-
-Kafka Streams consumes `traffic_processed` → applies:
-
-- State store tracking
-- Exactly-once semantics
-- Stream joins (optional)
-
-Outputs → `traffic_alerts`.
-
-### Step 4 — Alerting engine
-
-Java consumer → evaluates:
-
-- Congestion thresholds
-- Speed drops
-- Traffic spikes
-
-Outputs → Kafka Connect sink + dashboard.
-
-### Step 5 — Kafka Connect
+### Step 3 — Kafka Connect
 
 - Source: road metadata → Kafka
 - Sink: alerts → PostgreSQL
 
-### Step 6 — Visualization
+### Step 4 — Visualization
 
-Dashboard displays:
+Spring Boot dashboard polls REST API and displays:
 
-- Live traffic
-- Heatmaps
-- Alerts
-- Kafka metrics
+- Current traffic conditions
+- Active alerts
+- Basic metrics
 
-## 7. Spark streaming logic (conceptual)
-
-### Sliding window aggregation
-
-- Window: 10 seconds
-- Slide: 5 seconds
-- Compute:
-  - Average speed
-  - Vehicle density
-  - Congestion score
-
-### Congestion score formula
-
-[
-text{congestion_score} = frac{text{max_speed} - text{window_avg_speed}}{text{max_speed}}
-]
-
-### Alert rule (Java-style pseudocode)
-
-```java
-if (congestionScore > 0.7) {
-    emitAlert("CONGESTION", "HIGH");
-}
-```
-
-## 8. Kafka Streams logic
+## 7. Kafka Streams logic
 
 ### Topology
 
-- KStream from `traffic_processed`
+- KStream from `traffic_raw`
 - GroupBy road segment
 - Time-windowed aggregation
 - State store for historical congestion
 - Emit alerts when thresholds exceeded
+- Branch to `traffic_processed` and `traffic_alerts`
 
 ### Exactly-once semantics
 
@@ -275,93 +213,74 @@ if (congestionScore > 0.7) {
 - Dead-letter topic: `traffic_dlq`
 - Retriable vs non-retriable classification
 
-## 9. Kafka Connect integration
+## 8. Kafka Connect integration
 
 ### Source connector (PostgreSQL → Kafka)
 
 - Road metadata
-- Enrichment for Spark + Streams
+- Enrichment for Streams processing
 
 ### Sink connector (Kafka → PostgreSQL)
 
 - Persist alerts
 - Dashboard reads from DB
 
-## 10. Testing
+## 9. Testing
 
 Includes:
 
 - Embedded Kafka for unit tests
 - Testcontainers for integration tests
 - Producer/consumer load tests
-- Streams topology tests
+- Streams topology tests (TopologyTestDriver)
 - Schema validation tests
 
-## 11. Observability
+## 10. Observability
 
 - JMX metrics for producers/consumers
 - Streams metrics (latency, throughput, commit rate)
-- Spark metrics sink
 - Prometheus exporters
 - Grafana dashboards
+- Prometheus alerting rules
 
-## 12. Directory structure
+## 11. Directory structure
 
 ```text
 traffic-system/
-│
 ├── producer/
 │   └── Producer.java
-│
-├── spark/
-│   ├── StreamingJob.java
-│   └── ml_models/
-│
 ├── streams/
 │   └── TrafficStreamsApp.java
-│
-├── alert_engine/
-│   └── AlertConsumer.java
-│
 ├── connect/
 │   ├── source-config.json
 │   └── sink-config.json
-│
 ├── dashboard/
 │   └── DashboardApplication.java
-│
 ├── observability/
 │   ├── prometheus.yml
 │   └── grafana_dashboards/
-│
 ├── tests/
 │   ├── EmbeddedKafkaTests.java
 │   └── StreamsTopologyTests.java
-│
 ├── config/
 │   └── kafka_topics.json
-│
 └── docker-compose.yml
 ```
 
-## 13. Summary
+## 12. Summary
 
-This enhanced project now demonstrates full Kafka developer competency, covering:
+This project demonstrates full Kafka developer competency, covering all six Confluent Certified Developer exam sections:
 
-- Kafka fundamentals
-- Kafka client development
-- Kafka Streams
-- Kafka Connect
-- Serialization (Avro/JSON/Protobuf)
-- Security (SSL/SASL/ACLs)
-- Testing (embedded Kafka, topology tests)
-- Observability (Prometheus/Grafana)
-- Distributed processing (Spark)
-- Real-time alerting (Java)
+- **Kafka Fundamentals** — topics, partitions, offsets, retention, replication, CLI tools
+- **Application Development** — producer, consumer, serialization, error handling, Admin API
+- **Kafka Streams** — state stores, windowing, exactly-once semantics, KTables
+- **Kafka Connect** — source and sink connectors, CDC concepts
+- **Application Testing** — Embedded Kafka, Testcontainers, topology tests
+- **Application Observability** — JMX metrics, Prometheus, Grafana
 
-It is now suitable as a portfolio flagship project for:
+It is suitable as a portfolio flagship project for:
 
-- Confluent Certified Developer for Apache Kafka®
+- Confluent Certified Developer for Apache Kafka
 - Backend engineering roles
 - Data engineering roles
 - Streaming architecture roles

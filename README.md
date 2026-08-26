@@ -1,45 +1,27 @@
 # Real-Time Traffic Monitoring & Alerting System
 
-**Kafka + Java + Spark Structured Streaming**
+**Kafka + Java + Kafka Streams + Kafka Connect**
 
-A distributed, real-time traffic analytics platform that ingests live sensor data, processes it with Spark Structured Streaming, and generates actionable alerts — built entirely in Java.
-
-- [Real-Time Traffic Monitoring \& Alerting System](#real-time-traffic-monitoring--alerting-system)
-  - [Overview](#overview)
-    - [Tech Stack](#tech-stack)
-  - [Architecture](#architecture)
-    - [Data Flow](#data-flow)
-  - [Core Concepts](#core-concepts)
-    - [Sliding Window Aggregation](#sliding-window-aggregation)
-    - [Congestion Score](#congestion-score)
-    - [Alert Rules](#alert-rules)
-  - [Project Structure](#project-structure)
-  - [Epics \& Roadmap](#epics--roadmap)
-  - [Pseudo-Teacher Agent](#pseudo-teacher-agent)
-    - [What it does](#what-it-does)
-    - [How to use it](#how-to-use-it)
-  - [Documentation](#documentation)
-
----
+A distributed, real-time traffic analytics platform that ingests live sensor data, processes it with Kafka Streams, and generates actionable alerts — built entirely in Java.
 
 ## Overview
 
-This project simulates a city-scale traffic monitoring pipeline. Sensors placed along road segments emit vehicle count and speed data every second. A Java-based Kafka producer pushes those events into a streaming pipeline where Spark Structured Streaming computes sliding-window analytics and congestion scores. When congestion exceeds a configurable threshold, an alert engine fires notifications to a dedicated Kafka topic.
+This project simulates a city-scale traffic monitoring pipeline. Sensors placed along road segments emit vehicle count and speed data every second. A Java-based Kafka producer pushes those events into a streaming pipeline where Kafka Streams computes windowed analytics and congestion scores. When congestion exceeds a configurable threshold, alerts fire to a dedicated Kafka topic. Kafka Connect bridges PostgreSQL for road metadata and alert persistence.
 
-The system is designed for **scalability** (partition Kafka topics, scale Spark executors horizontally), **fault tolerance** (watermarking, idempotent consumers), and **high-throughput** event processing — all production-grade concerns wrapped in a clean, portfolio-ready architecture.
+The system demonstrates all six Confluent Certified Developer exam sections in a single, cohesive architecture.
 
 ### Tech Stack
 
 | Layer | Technology |
 |---|---|
-| Event streaming | Apache Kafka (KRaft or Zookeeper), Schema Registry |
-| Stream processing | Apache Spark Structured Streaming (Java API), Kafka Streams |
-| Ingestion & alerting | Java (Kafka client, Kafka Connect, Spring Boot optional) |
-| Serialization | Avro, JSON, Protobuf |
+| Event streaming | Apache Kafka (KRaft mode), Schema Registry |
+| Stream processing | Kafka Streams (Java) |
+| Ingestion & alerting | Java (Kafka client, Kafka Connect) |
+| Serialization | Avro, JSON |
 | Security | SSL encryption, SASL/SCRAM authentication, ACLs |
-| Storage | PostgreSQL (sink connector), MongoDB (optional), Delta Lake (optional) |
-| Dashboard | Spring Boot + Thymeleaf or React (optional) |
-| Deployment | Docker / Docker Compose, Kubernetes (optional), GitHub Actions CI/CD |
+| Storage | PostgreSQL (via Kafka Connect) |
+| Dashboard | Spring Boot + Thymeleaf |
+| Deployment | Docker / Docker Compose, GitHub Actions CI/CD |
 | Monitoring | Prometheus + Grafana, JMX metrics |
 | Testing | JUnit 5, Testcontainers, Embedded Kafka |
 
@@ -50,36 +32,31 @@ The system is designed for **scalability** (partition Kafka topics, scale Spark 
 ```mermaid
 flowchart
     A[Java Kafka Producer] -->|sensor events| B(Kafka: traffic_raw)
-    B --> C[Spark Structured Streaming Processor]
+    B --> C[Kafka Streams Processor]
     C -->|windowed analytics| D(Kafka: traffic_processed)
-    D --> E[Kafka Streams Processor]
-    E -->|state stores + alerts| F(Kafka: traffic_alerts)
-    F --> G[Java Alert Engine]
-    G -->|threshold alerts| H[Kafka Connect Sink]
-    H --> I[(PostgreSQL)]
-    G --> J[Dashboard]
+    C -->|alerts| E(Kafka: traffic_alerts)
+    E --> F[Kafka Connect Sink]
+    F --> G[(PostgreSQL)]
+    B --> H[Dashboard]
+    D --> H
+    E --> H
 ```
 
 ### Data Flow
 
 1. **Ingestion** — The Java producer emits JSON sensor events (`sensor_id`, `road_segment`, `vehicle_count`, `avg_speed`, `timestamp`) to `traffic_raw`.
-2. **Processing** — Spark reads from `traffic_raw`, applies a 10-second sliding window (5-second slide), computes average speed and congestion score per road segment, and writes results to `traffic_processed`.
-3. **Kafka Streams** — A Kafka Streams application consumes `traffic_processed`, maintains state stores for congestion trends, and emits alerts to `traffic_alerts` using exactly-once semantics.
-4. **Alerting** — A Java consumer reads `traffic_alerts`, evaluates threshold rules, and publishes alerts (`road_segment`, `alert_type`, `severity`, `timestamp`) to `traffic_alerts`. Alerts are routed to Kafka Connect sink (PostgreSQL) and dashboard API.
-5. **Kafka Connect** — Source connector ingests road metadata from PostgreSQL into Kafka. Sink connector persists alerts into PostgreSQL.
-6. **Visualization** — An optional dashboard subscribes to both `traffic_processed` and `traffic_alerts` for real-time display.
+2. **Processing** — Kafka Streams reads from `traffic_raw`, applies a 10-second tumbling window, computes average speed and congestion score per road segment, and writes results to `traffic_processed`.
+3. **Alerting** — When `congestion_score` exceeds 0.7, the Streams app emits a `CONGESTION` alert with severity `HIGH` to `traffic_alerts`.
+4. **Persistence** — Kafka Connect source brings road metadata from PostgreSQL into Kafka. Kafka Connect sink persists alerts back to PostgreSQL.
+5. **Visualization** — A Spring Boot dashboard polls the REST API and displays current traffic conditions and active alerts.
 
 ---
 
 ## Core Concepts
 
-### Sliding Window Aggregation
-
-Spark groups events into overlapping time windows. A 10-second window with a 5-second slide means each event appears in two consecutive windows, providing smooth averages that react to changing conditions without abrupt jumps.
-
 ### Congestion Score
 
-A normalized score (0.0 – 1.0) derived from:
+A normalized score (0.0 - 1.0) derived from:
 
 ```
 congestion_score = (max_speed - window_avg_speed) / max_speed
@@ -87,9 +64,13 @@ congestion_score = (max_speed - window_avg_speed) / max_speed
 
 A score of 0.8 means traffic is moving at 20% of the road's designed speed — heavy congestion. A score near 0 means free flow.
 
-### Alert Rules
+### Exactly-Once Semantics
 
-The alert engine evaluates simple threshold logic: when `congestion_score` exceeds a configurable limit (e.g., 0.7), it emits a `CONGESTION` alert with severity `HIGH`. Additional rules can detect speed drops, vehicle spikes, or anomalous patterns.
+Kafka Streams uses `processing.guarantee=exactly_once_v2` to ensure no alerts are duplicated or lost, even under failure conditions.
+
+### State Stores
+
+Kafka Streams maintains in-memory and persistent state stores for historical congestion data per road segment, enabling windowed aggregations and trend analysis without external databases.
 
 ---
 
@@ -99,18 +80,13 @@ The alert engine evaluates simple threshold logic: when `congestion_score` excee
 traffic-system/
 ├── producer/
 │   └── Producer.java              # Kafka producer — emits sensor events
-├── spark/
-│   ├── StreamingJob.java          # Spark Structured Streaming job
-│   └── ml_models/                 # Optional ML models (anomaly detection)
 ├── streams/
-│   └── TrafficStreamsApp.java      # Kafka Streams processor
-├── alert_engine/
-│   └── AlertConsumer.java         # Kafka consumer + rule evaluation
+│   └── TrafficStreamsApp.java      # Kafka Streams processor + alerting
 ├── connect/
-│   ├── source-config.json         # Kafka Connect source (PostgreSQL → Kafka)
-│   └── sink-config.json           # Kafka Connect sink (Kafka → PostgreSQL)
+│   ├── source-config.json         # Kafka Connect source (PostgreSQL -> Kafka)
+│   └── sink-config.json           # Kafka Connect sink (Kafka -> PostgreSQL)
 ├── dashboard/
-│   └── DashboardApplication.java  # Optional Spring Boot dashboard
+│   └── DashboardApplication.java  # Spring Boot dashboard
 ├── observability/
 │   ├── prometheus.yml             # Prometheus scraper config
 │   └── grafana_dashboards/        # Grafana dashboard JSON
@@ -130,40 +106,31 @@ traffic-system/
 |---|---|---|---|---|
 | 1 | Kafka Infrastructure & Topic Management | 3 | Critical | 1-2 |
 | 2 | Java Kafka Producer (Data Ingestion) | 3 | Critical | 2-3 |
-| 3 | Spark Structured Streaming Processor | 5 | High | 3-4 |
-| 4 | Kafka Streams Processor (Real-Time Alerting) | 4 | High | 4-5 |
-| 5 | Java Alert Engine & Business Rules | 3 | High | 5-6 |
-| 6 | Kafka Connect Integration | 3 | Medium | 6-7 |
-| 7 | Dashboard (Spring Boot + React) | 4 | Medium | 7-9 |
-| 8 | Security Implementation | 3 | High | 3-5 |
-| 9 | Observability & Monitoring | 4 | Medium | 6-8 |
-| 10 | Testing Framework | 4 | High | 4-7 |
-| 11 | Deployment & CI/CD | 3 | Medium | 8-10 |
-| 12 | Documentation & Knowledge Transfer | 3 | Medium | 9-10 |
+| 3 | Kafka Streams Processor (Processing + Alerting) | 4 | High | 3-5 |
+| 4 | Kafka Connect Integration | 3 | Medium | 5-6 |
+| 5 | Dashboard (Spring Boot) | 3 | Medium | 6-7 |
+| 6 | Security Implementation | 3 | High | 3-5 |
+| 7 | Observability & Monitoring | 3 | Medium | 6-8 |
+| 8 | Testing, Deployment & Documentation | 5 | High | 7-9 |
+
+**Total estimate: 223 - 356 hours** (high end well under 450)
 
 See [`project-epics.md`](project-epics.md) for full user stories and definitions of done.
 
 ---
 
-## Pseudo-Teacher Agent
+## Certification Coverage
 
-This repo includes a custom **OpenCode agent** called `pseudo-teacher` that teaches every concept in this project using annotated pseudo-code — never real, runnable code.
+All six Confluent Certified Developer exam sections are covered:
 
-### What it does
-
-- Explains Kafka producers, Spark streaming windows, congestion scoring, and alert rules through **pseudo-code blocks** with line-by-line annotations
-- Builds concepts incrementally: simple → complex
-- Highlights common pitfalls and explains *why* they happen
-- Uses analogies and real-world parallels to make abstract ideas concrete
-
-### How to use it
-
-1. Open this project in OpenCode
-2. Switch to (or invoke) the `pseudo-teacher` agent
-3. Ask about any concept — e.g., *"How does the sliding window work?"* or *"Explain the congestion score formula"*
-4. The agent responds with annotated pseudo-code and plain-English explanations
-
-The agent is defined at `.opencode/agent/pseudo-teacher.md`.
+| Exam Section | % | Project Coverage |
+|---|---|---|
+| Kafka Fundamentals | 23% | Epics 1, 6 — Topics, partitions, offsets, replication, CLI, security |
+| Application Development | 28% | Epics 2, 3, 5 — Producer, consumer, serialization, error handling |
+| Kafka Streams | 12% | Epic 3 — State stores, windowing, exactly-once, KTables |
+| Kafka Connect | 15% | Epic 4 — Source and sink connectors, CDC concepts |
+| Application Testing | 8% | Epic 8 — Embedded Kafka, Testcontainers, topology tests |
+| Application Observability | 13% | Epic 7 — JMX metrics, Prometheus, Grafana |
 
 ---
 
@@ -171,7 +138,6 @@ The agent is defined at `.opencode/agent/pseudo-teacher.md`.
 
 | Document | Description |
 |---|---|
-| [`project-overview.md`](project-overview.md) | Full architecture overview (Java stack) |
+| [`project-overview.md`](project-overview.md) | Full architecture overview |
 | [`project-epics.md`](project-epics.md) | User stories with definitions of done |
 | [`Certified_Developer_Apache_Kafka.md`](Certified_Developer_Apache_Kafka.md) | Confluent Certified Developer exam outline |
-| `.opencode/agent/pseudo-teacher.md` | Pseudo-code learning agent |
