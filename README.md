@@ -32,12 +32,16 @@ The system is designed for **scalability** (partition Kafka topics, scale Spark 
 
 | Layer | Technology |
 |---|---|
-| Event streaming | Apache Kafka (KRaft or Zookeeper) |
-| Stream processing | Apache Spark Structured Streaming (Java API) |
-| Ingestion & alerting | Java (Kafka client, Spring Boot optional) |
+| Event streaming | Apache Kafka (KRaft or Zookeeper), Schema Registry |
+| Stream processing | Apache Spark Structured Streaming (Java API), Kafka Streams |
+| Ingestion & alerting | Java (Kafka client, Kafka Connect, Spring Boot optional) |
+| Serialization | Avro, JSON, Protobuf |
+| Security | SSL encryption, SASL/SCRAM authentication, ACLs |
+| Storage | PostgreSQL (sink connector), MongoDB (optional), Delta Lake (optional) |
 | Dashboard | Spring Boot + Thymeleaf or React (optional) |
-| Deployment | Docker / Docker Compose |
-| Monitoring | Prometheus + Grafana |
+| Deployment | Docker / Docker Compose, Kubernetes (optional), GitHub Actions CI/CD |
+| Monitoring | Prometheus + Grafana, JMX metrics |
+| Testing | JUnit 5, Testcontainers, Embedded Kafka |
 
 ---
 
@@ -48,17 +52,22 @@ flowchart LR
     A[Java Kafka Producer] -->|sensor events| B(Kafka: traffic_raw)
     B --> C[Spark Structured Streaming Processor]
     C -->|windowed analytics| D(Kafka: traffic_processed)
-    D --> E[Java Alert Engine]
-    E -->|threshold alerts| F(Kafka: traffic_alerts)
-    F --> G[Dashboard]
+    D --> E[Kafka Streams Processor]
+    E -->|state stores + alerts| F(Kafka: traffic_alerts)
+    F --> G[Java Alert Engine]
+    G -->|threshold alerts| H[Kafka Connect Sink]
+    H --> I[(PostgreSQL)]
+    G --> J[Dashboard]
 ```
 
 ### Data Flow
 
 1. **Ingestion** — The Java producer emits JSON sensor events (`sensor_id`, `road_segment`, `vehicle_count`, `avg_speed`, `timestamp`) to `traffic_raw`.
 2. **Processing** — Spark reads from `traffic_raw`, applies a 10-second sliding window (5-second slide), computes average speed and congestion score per road segment, and writes results to `traffic_processed`.
-3. **Alerting** — A Java consumer reads `traffic_processed`, evaluates threshold rules, and publishes alerts (`road_segment`, `alert_type`, `severity`, `timestamp`) to `traffic_alerts`.
-4. **Visualization** — An optional dashboard subscribes to both `traffic_processed` and `traffic_alerts` for real-time display.
+3. **Kafka Streams** — A Kafka Streams application consumes `traffic_processed`, maintains state stores for congestion trends, and emits alerts to `traffic_alerts` using exactly-once semantics.
+4. **Alerting** — A Java consumer reads `traffic_alerts`, evaluates threshold rules, and publishes alerts (`road_segment`, `alert_type`, `severity`, `timestamp`) to `traffic_alerts`. Alerts are routed to Kafka Connect sink (PostgreSQL) and dashboard API.
+5. **Kafka Connect** — Source connector ingests road metadata from PostgreSQL into Kafka. Sink connector persists alerts into PostgreSQL.
+6. **Visualization** — An optional dashboard subscribes to both `traffic_processed` and `traffic_alerts` for real-time display.
 
 ---
 
@@ -93,10 +102,21 @@ traffic-system/
 ├── spark/
 │   ├── StreamingJob.java          # Spark Structured Streaming job
 │   └── ml_models/                 # Optional ML models (anomaly detection)
+├── streams/
+│   └── TrafficStreamsApp.java      # Kafka Streams processor
 ├── alert_engine/
 │   └── AlertConsumer.java         # Kafka consumer + rule evaluation
+├── connect/
+│   ├── source-config.json         # Kafka Connect source (PostgreSQL → Kafka)
+│   └── sink-config.json           # Kafka Connect sink (Kafka → PostgreSQL)
 ├── dashboard/
 │   └── DashboardApplication.java  # Optional Spring Boot dashboard
+├── observability/
+│   ├── prometheus.yml             # Prometheus scraper config
+│   └── grafana_dashboards/        # Grafana dashboard JSON
+├── tests/
+│   ├── EmbeddedKafkaTests.java    # Unit tests with Embedded Kafka
+│   └── StreamsTopologyTests.java  # Kafka Streams topology tests
 ├── config/
 │   └── kafka_topics.json          # Topic configuration
 └── docker-compose.yml             # Full system orchestration
@@ -106,16 +126,22 @@ traffic-system/
 
 ## Epics & Roadmap
 
-| # | Epic | Stories | Focus |
-|---|---|---|---|
-| 1 | Kafka Data Ingestion | 3 | Java producer, topic config, sample events |
-| 2 | Spark Structured Streaming | 5 | Job skeleton, window aggregation, congestion scoring |
-| 3 | Java Alert Engine | 3 | Consumer, rule logic, alert publishing |
-| 4 | Dashboard (Optional) | 4 | Live traffic view, alerts view, heatmap |
-| 5 | Infrastructure & Deployment | 2 | Docker Compose, Prometheus + Grafana |
-| 6 | Optional Enhancements | 3 | ML anomaly detection, Delta Lake, scaling |
+| # | Epic | Stories | Priority | Sprints |
+|---|---|---|---|---|
+| 1 | Kafka Infrastructure & Topic Management | 3 | Critical | 1-2 |
+| 2 | Java Kafka Producer (Data Ingestion) | 3 | Critical | 2-3 |
+| 3 | Spark Structured Streaming Processor | 5 | High | 3-4 |
+| 4 | Kafka Streams Processor (Real-Time Alerting) | 4 | High | 4-5 |
+| 5 | Java Alert Engine & Business Rules | 3 | High | 5-6 |
+| 6 | Kafka Connect Integration | 3 | Medium | 6-7 |
+| 7 | Dashboard (Spring Boot + React) | 4 | Medium | 7-9 |
+| 8 | Security Implementation | 3 | High | 3-5 |
+| 9 | Observability & Monitoring | 4 | Medium | 6-8 |
+| 10 | Testing Framework | 4 | High | 4-7 |
+| 11 | Deployment & CI/CD | 3 | Medium | 8-10 |
+| 12 | Documentation & Knowledge Transfer | 3 | Medium | 9-10 |
 
-See [`epics.md`](epics.md) for full user stories and definitions of done.
+See [`project-epics.md`](project-epics.md) for full user stories and definitions of done.
 
 ---
 
@@ -145,6 +171,7 @@ The agent is defined at `.opencode/agent/pseudo-teacher.md`.
 
 | Document | Description |
 |---|---|
-| [`overview-java.md`](overview-java.md) | Full architecture overview (Java stack) |
-| [`epics.md`](epics.md) | User stories with definitions of done |
+| [`project-overview.md`](project-overview.md) | Full architecture overview (Java stack) |
+| [`project-epics.md`](project-epics.md) | User stories with definitions of done |
+| [`Certified_Developer_Apache_Kafka.md`](Certified_Developer_Apache_Kafka.md) | Confluent Certified Developer exam outline |
 | `.opencode/agent/pseudo-teacher.md` | Pseudo-code learning agent |

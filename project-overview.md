@@ -1,10 +1,12 @@
-# Real-Time Traffic Monitoring & Alerting System (Enhanced for Kafka Certification)
+# Real-Time Traffic Monitoring & Alerting System
 
 (Kafka + Java + Spark Structured Streaming + Kafka Streams + Kafka Connect + Security + Observability)
 
-## 1. Project overview
+## 1. Project Overview
 
 A distributed, real-time traffic analytics system built to demonstrate end‑to‑end Kafka developer proficiency. It ingests live sensor data, processes it using Spark Structured Streaming and Kafka Streams, applies alerting logic in Java, integrates with Kafka Connect, and exposes full observability, testing, and security patterns required for the Confluent Certified Developer exam.
+
+**[Project Epics](project-epics.md)**
 
 This version covers:
 
