@@ -2,6 +2,57 @@
 
 ## [Project Overview](project-overview.md)
 
+- [Real-Time Traffic Monitoring \& Alerting System — Epics](#real-time-traffic-monitoring--alerting-system--epics)
+  - [Project Overview](#project-overview)
+  - [Release Milestones](#release-milestones)
+    - [Milestone 1: Foundation (Sprint 1-2)](#milestone-1-foundation-sprint-1-2)
+    - [Milestone 2: Core Pipeline (Sprint 3-5)](#milestone-2-core-pipeline-sprint-3-5)
+    - [Milestone 3: Integration (Sprint 6-7)](#milestone-3-integration-sprint-6-7)
+    - [Milestone 4: Polish (Sprint 8-9)](#milestone-4-polish-sprint-8-9)
+  - [Success Criteria](#success-criteria)
+  - [Epic 1: Kafka Infrastructure \& Topic Management](#epic-1-kafka-infrastructure--topic-management)
+    - [Epic 1: Description](#epic-1-description)
+    - [Epic 1: User Stories](#epic-1-user-stories)
+    - [Epic 1: Tasks](#epic-1-tasks)
+    - [Epic 1: Definition of Done](#epic-1-definition-of-done)
+  - [Epic 2: Java Kafka Producer (Data Ingestion)](#epic-2-java-kafka-producer-data-ingestion)
+    - [Epic 2: Description](#epic-2-description)
+    - [Epic 2: User Stories](#epic-2-user-stories)
+    - [Epic 2: Tasks](#epic-2-tasks)
+    - [Epic 2: Definition of Done](#epic-2-definition-of-done)
+  - [Epic 3: Kafka Streams Processor (Stream Processing + Alerting)](#epic-3-kafka-streams-processor-stream-processing--alerting)
+    - [Epic 3: Description](#epic-3-description)
+    - [Epic 3: User Stories](#epic-3-user-stories)
+    - [Epic 3: Tasks](#epic-3-tasks)
+    - [Epic 3: Definition of Done](#epic-3-definition-of-done)
+  - [Epic 4: Kafka Connect Integration](#epic-4-kafka-connect-integration)
+    - [Epic 4: Description](#epic-4-description)
+    - [Epic 4: User Stories](#epic-4-user-stories)
+    - [Epic 4: Tasks](#epic-4-tasks)
+    - [Epic 4: Definition of Done](#epic-4-definition-of-done)
+  - [Epic 5: Dashboard (Spring Boot)](#epic-5-dashboard-spring-boot)
+    - [Epic 5: Description](#epic-5-description)
+    - [Epic 5: User Stories](#epic-5-user-stories)
+    - [Epic 5: Tasks](#epic-5-tasks)
+    - [Epic 5: Definition of Done](#epic-5-definition-of-done)
+  - [Epic 6: Security Implementation](#epic-6-security-implementation)
+    - [Epic 6: Description](#epic-6-description)
+    - [Epic 6: User Stories](#epic-6-user-stories)
+    - [Epic 6: Tasks](#epic-6-tasks)
+    - [Epic 6: Definition of Done](#epic-6-definition-of-done)
+  - [Epic 7: Observability \& Monitoring](#epic-7-observability--monitoring)
+    - [Epic 7: Description](#epic-7-description)
+    - [Epic 7: User Stories](#epic-7-user-stories)
+    - [Epic 7: Tasks](#epic-7-tasks)
+    - [Epic 7: Definition of Done](#epic-7-definition-of-done)
+  - [Epic 8: Testing, Deployment \& Documentation](#epic-8-testing-deployment--documentation)
+    - [Epic 8: Description](#epic-8-description)
+    - [Epic 8: User Stories](#epic-8-user-stories)
+    - [Epic 8: Tasks](#epic-8-tasks)
+    - [Epic 8: Definition of Done](#epic-8-definition-of-done)
+  - [Epic Summary](#epic-summary)
+  - [Certification Topic Coverage Matrix](#certification-topic-coverage-matrix)
+
 ---
 
 ## Release Milestones
@@ -434,30 +485,30 @@ Implement comprehensive testing strategy, Docker containerization, CI/CD pipelin
 
 ## Epic Summary
 
-| Epic | Title | Priority | Sprints | Hours |
-| ---- | ------- | -------- |--------- | ------------ |
-| 1 | Kafka Infrastructure | Critical | 1-2 | 18 - 30 |
-| 2 | Java Kafka Producer | Critical | 2-3 | 26 - 42 |
-| 3 | Kafka Streams Processor | High | 3-5 | 39 - 62 |
-| 4 | Kafka Connect | Medium | 5-6 | 18 - 30 |
-| 5 | Dashboard (Spring Boot) | Medium | 6-7 | 26 - 40 |
-| 6 | Security | High | 3-5 | 24 - 38 |
-| 7 | Observability | Medium | 6-8 | 24 - 38 |
-| 8 | Testing, Deployment & Docs | High | 7-9 | 48 - 76 |
-| | **TOTAL** | | | **223 - 356** |
+| Epic | Title                       | Priority | Sprints  | Hours         |
+| ---- | -------                     | -------- |--------- | ------------  |
+| 1    | Kafka Infrastructure        | Critical | 1-2      | 18 - 30       |
+| 2    | Java Kafka Producer         | Critical | 2-3      | 26 - 42       |
+| 3    | Kafka Streams Processor     | High     | 3-5      | 39 - 62       |
+| 4    | Kafka Connect               | Medium   | 5-6      | 18 - 30       |
+| 5    | Dashboard (Spring Boot)     | Medium   | 6-7      | 26 - 40       |
+| 6    | Security                    | High     | 3-5      | 24 - 38       |
+| 7    | Observability               | Medium   | 6-8      | 24 - 38       |
+| 8    | Testing, Deployment & Docs  | High     | 7-9      | 48 - 76       |
+|      | **TOTAL**                   |          |          | **223 - 356** |
 
 ---
 
 ## Certification Topic Coverage Matrix
 
-| Exam Section | % | Epics Covering |
-|---|---|---|
-| Section 1: Kafka Fundamentals | 23% | Epic 1, Epic 6 |
-| Section 2: Application Development | 28% | Epic 2, Epic 3, Epic 5 |
-| Section 3: Kafka Streams | 12% | Epic 3 |
-| Section 4: Kafka Connect | 15% | Epic 4 |
-| Section 5: Application Testing | 8% | Epic 8 |
-| Section 6: Application Observability | 13% | Epic 7 |
+| Exam Section                         |  %  | Epics Covering         |
+| ---                                  | --- |  ---                   |
+| Section 1: Kafka Fundamentals        | 23% | Epic 1, Epic 6         |
+| Section 2: Application Development   | 28% | Epic 2, Epic 3, Epic 5 |
+| Section 3: Kafka Streams             | 12% | Epic 3                 |
+| Section 4: Kafka Connect             | 15% | Epic 4                 |
+| Section 5: Application Testing       | 8%  | Epic 8                 |
+| Section 6: Application Observability | 13% | Epic 7                 |
 
 All six exam sections are covered. Every certification task from the exam outline is addressed:
 

@@ -1,8 +1,23 @@
 # Real-Time Traffic Monitoring & Alerting System
 
-**Kafka + Java + Kafka Streams + Kafka Connect**
+## Kafka + Java + Kafka Streams + Kafka Connect
 
 A distributed, real-time traffic analytics platform that ingests live sensor data, processes it with Kafka Streams, and generates actionable alerts — built entirely in Java.
+
+- [Real-Time Traffic Monitoring \& Alerting System](#real-time-traffic-monitoring--alerting-system)
+  - [Kafka + Java + Kafka Streams + Kafka Connect](#kafka--java--kafka-streams--kafka-connect)
+  - [Overview](#overview)
+    - [Tech Stack](#tech-stack)
+  - [Architecture](#architecture)
+    - [Data Flow](#data-flow)
+  - [Core Concepts](#core-concepts)
+    - [Congestion Score](#congestion-score)
+    - [Exactly-Once Semantics](#exactly-once-semantics)
+    - [State Stores](#state-stores)
+  - [Project Structure](#project-structure)
+  - [Epics \& Roadmap](#epics--roadmap)
+  - [Certification Coverage](#certification-coverage)
+  - [Documentation](#documentation)
 
 ## Overview
 
@@ -12,18 +27,18 @@ The system demonstrates all six Confluent Certified Developer exam sections in a
 
 ### Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Event streaming | Apache Kafka (KRaft mode), Schema Registry |
-| Stream processing | Kafka Streams (Java) |
-| Ingestion & alerting | Java (Kafka client, Kafka Connect) |
-| Serialization | Avro, JSON |
-| Security | SSL encryption, SASL/SCRAM authentication, ACLs |
-| Storage | PostgreSQL (via Kafka Connect) |
-| Dashboard | Spring Boot + Thymeleaf |
-| Deployment | Docker / Docker Compose, GitHub Actions CI/CD |
-| Monitoring | Prometheus + Grafana, JMX metrics |
-| Testing | JUnit 5, Testcontainers, Embedded Kafka |
+| Layer                | Technology                                      |
+|---                   | ---                                             |
+| Event streaming      | Apache Kafka (KRaft mode), Schema Registry      |
+| Stream processing    | Kafka Streams (Java)                            |
+| Ingestion & alerting | Java (Kafka client, Kafka Connect)              |
+| Serialization        | Avro, JSON                                      |
+| Security             | SSL encryption, SASL/SCRAM authentication, ACLs |
+| Storage              | PostgreSQL (via Kafka Connect)                  |
+| Dashboard            | Spring Boot + Thymeleaf                         |
+| Deployment           | Docker / Docker Compose, GitHub Actions CI/CD   |
+| Monitoring           | Prometheus + Grafana, JMX metrics               |
+| Testing              | JUnit 5, Testcontainers, Embedded Kafka         |
 
 ---
 
@@ -58,7 +73,7 @@ flowchart
 
 A normalized score (0.0 - 1.0) derived from:
 
-```
+```text
 congestion_score = (max_speed - window_avg_speed) / max_speed
 ```
 
@@ -76,7 +91,7 @@ Kafka Streams maintains in-memory and persistent state stores for historical con
 
 ## Project Structure
 
-```
+```text
 traffic-system/
 ├── producer/
 │   └── Producer.java              # Kafka producer — emits sensor events
@@ -102,16 +117,16 @@ traffic-system/
 
 ## Epics & Roadmap
 
-| # | Epic | Stories | Priority | Sprints |
-|---|---|---|---|---|
-| 1 | Kafka Infrastructure & Topic Management | 3 | Critical | 1-2 |
-| 2 | Java Kafka Producer (Data Ingestion) | 3 | Critical | 2-3 |
-| 3 | Kafka Streams Processor (Processing + Alerting) | 4 | High | 3-5 |
-| 4 | Kafka Connect Integration | 3 | Medium | 5-6 |
-| 5 | Dashboard (Spring Boot) | 3 | Medium | 6-7 |
-| 6 | Security Implementation | 3 | High | 3-5 |
-| 7 | Observability & Monitoring | 3 | Medium | 6-8 |
-| 8 | Testing, Deployment & Documentation | 5 | High | 7-9 |
+| #   | Epic                                            | Stories | Priority | Sprints |
+| --- | ---                                             | ---     | ---      | ---     |
+| 1   | Kafka Infrastructure & Topic Management         |  3      | Critical | 1-2     |
+| 2   | Java Kafka Producer (Data Ingestion)            |  3      | Critical | 2-3     |
+| 3   | Kafka Streams Processor (Processing + Alerting) |  4      | High     | 3-5     |
+| 4   | Kafka Connect Integration                       |  3      | Medium   | 5-6     |
+| 5   | Dashboard (Spring Boot)                         |  3      | Medium   | 6-7     |
+| 6   | Security Implementation                         |  3      | High     | 3-5     |
+| 7   | Observability & Monitoring                      |  3      | Medium   | 6-8     |
+| 8   | Testing, Deployment & Documentation             |  5      | High     | 7-9     |
 
 **Total estimate: 223 - 356 hours** (high end well under 450)
 
@@ -123,21 +138,21 @@ See [`project-epics.md`](project-epics.md) for full user stories and definitions
 
 All six Confluent Certified Developer exam sections are covered:
 
-| Exam Section | % | Project Coverage |
-|---|---|---|
-| Kafka Fundamentals | 23% | Epics 1, 6 — Topics, partitions, offsets, replication, CLI, security |
-| Application Development | 28% | Epics 2, 3, 5 — Producer, consumer, serialization, error handling |
-| Kafka Streams | 12% | Epic 3 — State stores, windowing, exactly-once, KTables |
-| Kafka Connect | 15% | Epic 4 — Source and sink connectors, CDC concepts |
-| Application Testing | 8% | Epic 8 — Embedded Kafka, Testcontainers, topology tests |
-| Application Observability | 13% | Epic 7 — JMX metrics, Prometheus, Grafana |
+| Exam Section              | %    | Project Coverage                                                     |
+| ---                       | ---: | ---                                                                  |
+| Kafka Fundamentals        | 23%  | Epics 1, 6 — Topics, partitions, offsets, replication, CLI, security |
+| Application Development   | 28%  | Epics 2, 3, 5 — Producer, consumer, serialization, error handling    |
+| Kafka Streams             | 12%  | Epic 3 — State stores, windowing, exactly-once, KTables              |
+| Kafka Connect             | 15%  | Epic 4 — Source and sink connectors, CDC concepts                    |
+| Application Testing       | 8%   | Epic 8 — Embedded Kafka, Testcontainers, topology tests              |
+| Application Observability | 13%  | Epic 7 — JMX metrics, Prometheus, Grafana                            |
 
 ---
 
 ## Documentation
 
-| Document | Description |
-|---|---|
-| [`project-overview.md`](project-overview.md) | Full architecture overview |
-| [`project-epics.md`](project-epics.md) | User stories with definitions of done |
+| Document                                                                     | Description                                |
+| ---                                                                          | ---                                        |
+| [`project-overview.md`](project-overview.md)                                 | Full architecture overview                 |
+| [`project-epics.md`](project-epics.md)                                       | User stories with definitions of done      |
 | [`Certified_Developer_Apache_Kafka.md`](Certified_Developer_Apache_Kafka.md) | Confluent Certified Developer exam outline |

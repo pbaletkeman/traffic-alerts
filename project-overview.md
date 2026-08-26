@@ -10,14 +10,14 @@ A distributed, real-time traffic analytics system built to demonstrate end-to-en
 
 This version covers all six exam sections:
 
-| Exam Section | % | Project Coverage |
-|---|---|---|
-| Kafka Fundamentals | 23% | Topics, partitions, offsets, retention, replication, CLI tools |
-| Application Development | 28% | Producer, consumer, serialization, error handling, Admin API |
-| Kafka Streams | 12% | State stores, windowing, exactly-once, KTables |
-| Kafka Connect | 15% | Source + sink connectors, CDC concepts |
-| Application Testing | 8% | Embedded Kafka, Testcontainers, topology tests |
-| Application Observability | 13% | JMX metrics, Prometheus, Grafana |
+| Exam Section              |  %   | Project Coverage                                               |
+| ---                       | ---: | ---                                                            |
+| Kafka Fundamentals        | 23%  | Topics, partitions, offsets, retention, replication, CLI tools |
+| Application Development   | 28%  | Producer, consumer, serialization, error handling, Admin API   |
+| Kafka Streams             | 12%  | State stores, windowing, exactly-once, KTables                 |
+| Kafka Connect             | 15%  | Source + sink connectors, CDC concepts                         |
+| Application Testing       | 8%   | Embedded Kafka, Testcontainers, topology tests                 |
+| Application Observability | 13%  | JMX metrics, Prometheus, Grafana                               |
 
 ## 2. High-level architecture
 
@@ -62,7 +62,7 @@ This version covers all six exam sections:
 ## 3. Kafka topics
 
 | Topic               | Purpose              | Partitions  | Notes                 |
-| -------             |---------             | ----------- | -------               |
+| -------             |---------             | ----------: | -------               |
 | `traffic_raw`       | Raw sensor events    | 6           | Keyed by road_segment |
 | `traffic_processed` | Enriched analytics   | 6           | Compacted optional    |
 | `traffic_alerts`    | Alert notifications  | 3           | Short retention       |
@@ -177,6 +177,7 @@ Kafka Streams reads `traffic_raw` → applies:
 - Alert emission when threshold exceeded
 
 Outputs:
+
 - Enriched events → `traffic_processed`
 - Alerts → `traffic_alerts`
 
