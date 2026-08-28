@@ -115,19 +115,21 @@ Set up the Kafka infrastructure using KRaft mode, Schema Registry, topic creatio
 
 ### Epic 1: Tasks
 
-- [ ] Configure Kafka brokers (3-node cluster) with KRaft mode
-- [ ] Set up replication factor of 3 for all critical topics
-- [ ] Create `traffic_raw` topic (6 partitions, keyed by road_segment)
-- [ ] Create `traffic_processed` topic (6 partitions)
-- [ ] Create `traffic_alerts` topic (3 partitions, short retention)
-- [ ] Create `road_metadata` topic (1 partition, compacted)
-- [ ] Create `traffic_dlq` dead-letter topic
-- [ ] Configure Min ISR settings
-- [ ] Set up Schema Registry with Avro and JSON support
-- [ ] Configure retention policies per topic
-- [ ] Enable lz4 compression at broker level
-- [ ] Create docker-compose.yml with Kafka stack (brokers + Schema Registry)
-- [ ] Demonstrate CLI tools: kafka-topics, kafka-console-producer, kafka-console-consumer, kafka-configs, kafka-acls
+| Done | Task | Estimate |
+| ---- | ---- | -------- |
+| [ ] | Configure Kafka brokers (3-node cluster) with KRaft mode | 4 - 6 hours |
+| [ ] | Set up replication factor of 3 for all critical topics | 1 - 2 hours |
+| [ ] | Create `traffic_raw` topic (6 partitions, keyed by road_segment) | 1 - 2 hours |
+| [ ] | Create `traffic_processed` topic (6 partitions) | 1 - 2 hours |
+| [ ] | Create `traffic_alerts` topic (3 partitions, short retention) | 1 - 2 hours |
+| [ ] | Create `road_metadata` topic (1 partition, compacted) | 1 - 2 hours |
+| [ ] | Create `traffic_dlq` dead-letter topic | 1 - 2 hours |
+| [ ] | Configure Min ISR settings | 1 - 2 hours |
+| [ ] | Set up Schema Registry with Avro and JSON support | 3 - 4 hours |
+| [ ] | Configure retention policies per topic | 1 - 2 hours |
+| [ ] | Enable lz4 compression at broker level | 1 - 2 hours |
+| [ ] | Create docker-compose.yml with Kafka stack (brokers + Schema Registry) | 2 - 3 hours |
+| [ ] | Demonstrate CLI tools: kafka-topics, kafka-console-producer, kafka-console-consumer, kafka-configs, kafka-acls | 2 - 3 hours |
 
 ### Epic 1: Definition of Done
 
@@ -161,19 +163,21 @@ Build a production-grade Java Kafka producer that publishes raw sensor events to
 
 ### Epic 2: Tasks
 
-- [ ] Create `Producer.java` with KafkaProducer client
-- [ ] Implement key hashing partitioning strategy (key by road_segment)
-- [ ] Configure lz4/snappy compression
-- [ ] Tune batch.size and linger.ms for throughput
-- [ ] Implement retry logic with retryable vs non-retryable error classification
-- [ ] Add SSL/SASL authentication configuration
-- [ ] Implement callback handlers for acknowledgment tracking
-- [ ] Add JMX metrics for producer monitoring
-- [ ] Create Avro schema for raw sensor events
-- [ ] Implement serialization with Schema Registry integration
-- [ ] Add dead-letter topic routing for failed messages
-- [ ] Create producer configuration class with environment-based overrides
-- [ ] Write unit tests with Embedded Kafka
+| Done | Task | Estimate |
+| ---- | ---- | -------- |
+| [ ] | Create `Producer.java` with KafkaProducer client | 2 - 3 hours |
+| [ ] | Implement key hashing partitioning strategy (key by road_segment) | 2 - 3 hours |
+| [ ] | Configure lz4/snappy compression | 1 - 2 hours |
+| [ ] | Tune batch.size and linger.ms for throughput | 1 - 2 hours |
+| [ ] | Implement retry logic with retryable vs non-retryable error classification | 2 - 3 hours |
+| [ ] | Add SSL/SASL authentication configuration | 2 - 3 hours |
+| [ ] | Implement callback handlers for acknowledgment tracking | 1 - 2 hours |
+| [ ] | Add JMX metrics for producer monitoring | 1 - 2 hours |
+| [ ] | Create Avro schema for raw sensor events | 2 - 3 hours |
+| [ ] | Implement serialization with Schema Registry integration | 3 - 4 hours |
+| [ ] | Add dead-letter topic routing for failed messages | 2 - 3 hours |
+| [ ] | Create producer configuration class with environment-based overrides | 1 - 2 hours |
+| [ ] | Write unit tests with Embedded Kafka | 4 - 6 hours |
 
 ### Epic 2: Definition of Done
 
@@ -212,24 +216,26 @@ Build Kafka Streams application that consumes from `traffic_raw`, performs windo
 
 ### Epic 3: Tasks
 
-- [ ] Create `TrafficStreamsApp.java` with Kafka Streams topology
-- [ ] Configure KStream from `traffic_raw`
-- [ ] Implement GroupBy road_segment
-- [ ] Add tumbling window aggregation (10-second windows)
-- [ ] Add sliding window aggregation (10s window, 5s slide) for smoother averages
-- [ ] Create state store for historical congestion tracking
-- [ ] Calculate average speed per window
-- [ ] Calculate vehicle density per window
-- [ ] Implement congestion score formula: `(max_speed - window_avg_speed) / max_speed`
-- [ ] Implement alert emission logic (congestion > 0.7 emits HIGH alert)
-- [ ] Configure exactly-once semantics (`processing.guarantee=exactly_once_v2`)
-- [ ] Add dead-letter topic routing for failed processing
-- [ ] Implement retriable vs non-retriable error classification
-- [ ] Add KTable for road metadata enrichment
-- [ ] Configure state store cleanup and retention
-- [ ] Add JMX metrics for Streams monitoring
-- [ ] Write topology unit tests with TopologyTestDriver
-- [ ] Write integration tests with Embedded Kafka
+| Done | Task | Estimate |
+| ---- | ---- | -------- |
+| [ ] | Create `TrafficStreamsApp.java` with Kafka Streams topology | 2 - 3 hours |
+| [ ] | Configure KStream from `traffic_raw` | 1 - 2 hours |
+| [ ] | Implement GroupBy road_segment | 1 - 2 hours |
+| [ ] | Add tumbling window aggregation (10-second windows) | 2 - 3 hours |
+| [ ] | Add sliding window aggregation (10s window, 5s slide) for smoother averages | 2 - 3 hours |
+| [ ] | Create state store for historical congestion tracking | 2 - 3 hours |
+| [ ] | Calculate average speed per window | 1 - 2 hours |
+| [ ] | Calculate vehicle density per window | 1 - 2 hours |
+| [ ] | Implement congestion score formula: `(max_speed - window_avg_speed) / max_speed` | 1 - 2 hours |
+| [ ] | Implement alert emission logic (congestion > 0.7 emits HIGH alert) | 2 - 3 hours |
+| [ ] | Configure exactly-once semantics (`processing.guarantee=exactly_once_v2`) | 2 - 3 hours |
+| [ ] | Add dead-letter topic routing for failed processing | 2 - 3 hours |
+| [ ] | Implement retriable vs non-retriable error classification | 1 - 2 hours |
+| [ ] | Add KTable for road metadata enrichment | 2 - 3 hours |
+| [ ] | Configure state store cleanup and retention | 1 - 2 hours |
+| [ ] | Add JMX metrics for Streams monitoring | 1 - 2 hours |
+| [ ] | Write topology unit tests with TopologyTestDriver | 4 - 6 hours |
+| [ ] | Write integration tests with Embedded Kafka | 6 - 8 hours |
 
 ### Epic 3: Definition of Done
 
@@ -267,17 +273,19 @@ Implement Kafka Connect source and sink connectors for PostgreSQL integration, d
 
 ### Epic 4: Tasks
 
-- [ ] Configure PostgreSQL source connector for road metadata
-- [ ] Create `source-config.json` with JDBC connector settings
-- [ ] Configure PostgreSQL sink connector for alerts
-- [ ] Create `sink-config.json` with JDBC connector settings
-- [ ] Set up Kafka Connect REST API integration
-- [ ] Implement connector health monitoring
-- [ ] Configure schema compatibility modes
-- [ ] Add error handling with dead-letter queue routing
-- [ ] Create PostgreSQL schema for road_metadata and alerts tables
-- [ ] Test connector restart and offset recovery
-- [ ] Write unit tests for connector configurations
+| Done | Task | Estimate |
+| ---- | ---- | -------- |
+| [ ] | Configure PostgreSQL source connector for road metadata | 2 - 3 hours |
+| [ ] | Create `source-config.json` with JDBC connector settings | 1 - 2 hours |
+| [ ] | Configure PostgreSQL sink connector for alerts | 2 - 3 hours |
+| [ ] | Create `sink-config.json` with JDBC connector settings | 1 - 2 hours |
+| [ ] | Set up Kafka Connect REST API integration | 2 - 3 hours |
+| [ ] | Implement connector health monitoring | 1 - 2 hours |
+| [ ] | Configure schema compatibility modes | 1 - 2 hours |
+| [ ] | Add error handling with dead-letter queue routing | 2 - 3 hours |
+| [ ] | Create PostgreSQL schema for road_metadata and alerts tables | 2 - 3 hours |
+| [ ] | Test connector restart and offset recovery | 2 - 3 hours |
+| [ ] | Write unit tests for connector configurations | 2 - 3 hours |
 
 ### Epic 4: Definition of Done
 
@@ -312,14 +320,16 @@ Build a simple Spring Boot dashboard with REST API and server-rendered Thymeleaf
 
 ### Epic 5: Tasks
 
-- [ ] Create `DashboardApplication.java` (Spring Boot)
-- [ ] Build REST API endpoints for traffic data
-- [ ] Create Thymeleaf templates for traffic view
-- [ ] Create Thymeleaf templates for alerts view
-- [ ] Implement polling-based data refresh (every 5 seconds)
-- [ ] Add basic Kafka metrics endpoint
-- [ ] Configure CORS and error handling
-- [ ] Add responsive CSS styling
+| Done | Task | Estimate |
+| ---- | ---- | -------- |
+| [ ] | Create `DashboardApplication.java` (Spring Boot) | 2 - 3 hours |
+| [ ] | Build REST API endpoints for traffic data | 3 - 4 hours |
+| [ ] | Create Thymeleaf templates for traffic view | 3 - 4 hours |
+| [ ] | Create Thymeleaf templates for alerts view | 2 - 3 hours |
+| [ ] | Implement polling-based data refresh (every 5 seconds) | 2 - 3 hours |
+| [ ] | Add basic Kafka metrics endpoint | 2 - 3 hours |
+| [ ] | Configure CORS and error handling | 1 - 2 hours |
+| [ ] | Add responsive CSS styling | 3 - 4 hours |
 
 ### Epic 5: Definition of Done
 
@@ -352,17 +362,19 @@ Implement SSL encryption, SASL/SCRAM authentication, and ACLs for all Kafka clie
 
 ### Epic 6: Tasks
 
-- [ ] Generate SSL certificates for Kafka brokers
-- [ ] Configure SSL listener on Kafka brokers
-- [ ] Set up SASL/SCRAM authentication mechanism
-- [ ] Create user credentials for each client application
-- [ ] Configure ACLs for all topics (producer: write, consumer: read)
-- [ ] Update producer with SSL/SASL configuration
-- [ ] Update Streams app with SSL/SASL configuration
-- [ ] Update Kafka Connect with SSL/SASL configuration
-- [ ] Update Schema Registry with SSL configuration
-- [ ] Test secure communication end-to-end
-- [ ] Document security configuration
+| Done | Task | Estimate |
+| ---- | ---- | -------- |
+| [ ] | Generate SSL certificates for Kafka brokers | 2 - 3 hours |
+| [ ] | Configure SSL listener on Kafka brokers | 2 - 3 hours |
+| [ ] | Set up SASL/SCRAM authentication mechanism | 2 - 3 hours |
+| [ ] | Create user credentials for each client application | 1 - 2 hours |
+| [ ] | Configure ACLs for all topics (producer: write, consumer: read) | 3 - 4 hours |
+| [ ] | Update producer with SSL/SASL configuration | 2 - 3 hours |
+| [ ] | Update Streams app with SSL/SASL configuration | 2 - 3 hours |
+| [ ] | Update Kafka Connect with SSL/SASL configuration | 2 - 3 hours |
+| [ ] | Update Schema Registry with SSL configuration | 2 - 3 hours |
+| [ ] | Test secure communication end-to-end | 3 - 4 hours |
+| [ ] | Document security configuration | 1 - 2 hours |
 
 ### Epic 6: Definition of Done
 
@@ -398,15 +410,17 @@ Set up Prometheus metrics collection, Grafana dashboards, and JMX exporters for 
 
 ### Epic 7: Tasks
 
-- [ ] Configure JMX exporter for Kafka brokers
-- [ ] Configure JMX exporter for Java applications
-- [ ] Set up Prometheus scraper configuration
-- [ ] Create Prometheus alerting rules for Kafka metrics
-- [ ] Build Grafana dashboard: Kafka Cluster Overview
-- [ ] Build Grafana dashboard: Producer/Consumer Performance
-- [ ] Build Grafana dashboard: Streams Processing Metrics
-- [ ] Configure Prometheus retention and storage
-- [ ] Add custom application metrics (business metrics)
+| Done | Task | Estimate |
+| ---- | ---- | -------- |
+| [ ] | Configure JMX exporter for Kafka brokers | 2 - 3 hours |
+| [ ] | Configure JMX exporter for Java applications | 2 - 3 hours |
+| [ ] | Set up Prometheus scraper configuration | 2 - 3 hours |
+| [ ] | Create Prometheus alerting rules for Kafka metrics | 2 - 3 hours |
+| [ ] | Build Grafana dashboard: Kafka Cluster Overview | 3 - 4 hours |
+| [ ] | Build Grafana dashboard: Producer/Consumer Performance | 3 - 4 hours |
+| [ ] | Build Grafana dashboard: Streams Processing Metrics | 3 - 4 hours |
+| [ ] | Configure Prometheus retention and storage | 1 - 2 hours |
+| [ ] | Add custom application metrics (business metrics) | 2 - 3 hours |
 
 ### Epic 7: Definition of Done
 
@@ -443,26 +457,28 @@ Implement comprehensive testing strategy, Docker containerization, CI/CD pipelin
 
 ### Epic 8: Tasks
 
-- [ ] Set up JUnit 5 test framework
-- [ ] Configure Embedded Kafka for unit tests
-- [ ] Set up Testcontainers for integration tests
-- [ ] Write producer unit tests (serialization, partitioning, error handling)
-- [ ] Write Streams topology unit tests (TopologyTestDriver)
-- [ ] Write alert logic tests
-- [ ] Create integration test: producer to Kafka to Streams
-- [ ] Create integration test: Kafka Connect with Testcontainers PostgreSQL
-- [ ] Implement schema validation tests
-- [ ] Set up load testing with kafka-producer-perf-test
-- [ ] Create Dockerfile for Java producer
-- [ ] Create Dockerfile for Kafka Streams app
-- [ ] Create Dockerfile for Spring Boot dashboard
-- [ ] Update docker-compose.yml with all services
-- [ ] Set up GitHub Actions workflow for CI
-- [ ] Configure automated test execution in CI
-- [ ] Create architecture diagram (Mermaid)
-- [ ] Document Kafka topic schema and partitioning strategy
-- [ ] Write API documentation for dashboard REST endpoints
-- [ ] Create developer setup guide
+| Done | Task | Estimate |
+| ---- | ---- | -------- |
+| [ ] | Set up JUnit 5 test framework | 1 - 2 hours |
+| [ ] | Configure Embedded Kafka for unit tests | 2 - 3 hours |
+| [ ] | Set up Testcontainers for integration tests | 3 - 4 hours |
+| [ ] | Write producer unit tests (serialization, partitioning, error handling) | 4 - 6 hours |
+| [ ] | Write Streams topology unit tests (TopologyTestDriver) | 4 - 6 hours |
+| [ ] | Write alert logic tests | 2 - 3 hours |
+| [ ] | Create integration test: producer to Kafka to Streams | 4 - 6 hours |
+| [ ] | Create integration test: Kafka Connect with Testcontainers PostgreSQL | 4 - 6 hours |
+| [ ] | Implement schema validation tests | 2 - 3 hours |
+| [ ] | Set up load testing with kafka-producer-perf-test | 2 - 3 hours |
+| [ ] | Create Dockerfile for Java producer | 2 - 3 hours |
+| [ ] | Create Dockerfile for Kafka Streams app | 2 - 3 hours |
+| [ ] | Create Dockerfile for Spring Boot dashboard | 2 - 3 hours |
+| [ ] | Update docker-compose.yml with all services | 3 - 4 hours |
+| [ ] | Set up GitHub Actions workflow for CI | 3 - 4 hours |
+| [ ] | Configure automated test execution in CI | 2 - 3 hours |
+| [ ] | Create architecture diagram (Mermaid) | 2 - 3 hours |
+| [ ] | Document Kafka topic schema and partitioning strategy | 2 - 3 hours |
+| [ ] | Write API documentation for dashboard REST endpoints | 2 - 3 hours |
+| [ ] | Create developer setup guide | 3 - 4 hours |
 
 ### Epic 8: Definition of Done
 
