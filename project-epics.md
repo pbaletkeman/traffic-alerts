@@ -117,29 +117,29 @@ Set up the Kafka infrastructure using KRaft mode, Schema Registry, topic creatio
 
 | Done | Task | Estimate |
 | ---- | ---- | -------- |
-| [ ] | task 1 - Configure Kafka brokers (3-node cluster) with KRaft mode | 4 - 6 hours |
-| [ ] | task 2 - Set up replication factor of 3 for all critical topics | 1 - 2 hours |
-| [ ] | task 3 - Create `traffic_raw` topic (6 partitions, keyed by road_segment) | 1 - 2 hours |
-| [ ] | task 4 - Create `traffic_processed` topic (6 partitions) | 1 - 2 hours |
-| [ ] | task 5 - Create `traffic_alerts` topic (3 partitions, short retention) | 1 - 2 hours |
-| [ ] | task 6 - Create `road_metadata` topic (1 partition, compacted) | 1 - 2 hours |
-| [ ] | task 7 - Create `traffic_dlq` dead-letter topic | 1 - 2 hours |
-| [ ] | task 8 - Configure Min ISR settings | 1 - 2 hours |
-| [ ] | task 9 - Set up Schema Registry with Avro and JSON support | 3 - 4 hours |
-| [ ] | task 10 - Configure retention policies per topic | 1 - 2 hours |
-| [ ] | task 11 - Enable lz4 compression at broker level | 1 - 2 hours |
-| [ ] | task 12 - Create docker-compose.yml with Kafka stack (brokers + Schema Registry) | 2 - 3 hours |
+| [x] | task 1 - Configure Kafka brokers (3-node cluster) with KRaft mode | 4 - 6 hours |
+| [x] | task 2 - Set up replication factor of 3 for all critical topics | 1 - 2 hours |
+| [x] | task 3 - Create `traffic_raw` topic (6 partitions, keyed by road_segment) | 1 - 2 hours |
+| [x] | task 4 - Create `traffic_processed` topic (6 partitions) | 1 - 2 hours |
+| [x] | task 5 - Create `traffic_alerts` topic (3 partitions, short retention) | 1 - 2 hours |
+| [x] | task 6 - Create `road_metadata` topic (1 partition, compacted) | 1 - 2 hours |
+| [x] | task 7 - Create `traffic_dlq` dead-letter topic | 1 - 2 hours |
+| [x] | task 8 - Configure Min ISR settings | 1 - 2 hours |
+| [x] | task 9 - Set up Schema Registry with Avro and JSON support | 3 - 4 hours |
+| [x] | task 10 - Configure retention policies per topic | 1 - 2 hours |
+| [x] | task 11 - Enable lz4 compression at broker level | 1 - 2 hours |
+| [x] | task 12 - Create docker-compose.yml with Kafka stack (brokers + Schema Registry) | 2 - 3 hours |
 | [ ] | task 13 - Demonstrate CLI tools: kafka-topics, kafka-console-producer, kafka-console-consumer, kafka-configs, kafka-acls | 2 - 3 hours |
 
 ### Epic 1: Definition of Done
 
-- [ ] All Kafka brokers running and healthy (verified via `kafka-broker-api-versions`)
-- [ ] Schema Registry accessible and responding to schema registration requests
-- [ ] All 5 topics created with correct partition counts and replication factors
-- [ ] Topic configurations verified via `kafka-configs --describe`
-- [ ] Docker Compose starts entire stack cleanly
-- [ ] `kafka-topics --list` shows all required topics
-- [ ] Schema Registry can register and retrieve Avro schemas
+- [x] All Kafka brokers running and healthy (verified via `kafka-broker-api-versions`)
+- [x] Schema Registry accessible and responding to schema registration requests
+- [x] All 5 topics created with correct partition counts and replication factors
+- [x] Topic configurations verified via `kafka-configs --describe`
+- [x] Docker Compose starts entire stack cleanly
+- [x] `kafka-topics --list` shows all required topics
+- [x] Schema Registry can register and retrieve Avro schemas
 - [ ] CLI tools demonstrated for all operations
 
 ---
