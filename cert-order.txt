@@ -1,0 +1,34 @@
+1) PyTorch Certified Associate (PTCA)
+You already work with Python, backend development, and ML‑adjacent tooling. PTCA strengthens:
+
+Tensor operations, training loops, device execution
+
+Model optimization & performance tuning
+
+Data pipelines (Datasets, DataLoaders, Transforms)
+
+This directly supports your GH‑200, Databricks, and backend goals.
+
+2) Kafka Developer (CDAK)
+Kafka is easier once you understand how ML systems produce/consume data. CDAK covers:
+
+Producers/consumers, partitions, offsets, compression
+
+Schema evolution (Avro/JSON/Proto)
+
+Kafka Streams & Connect
+
+Exactly‑once semantics, retries, batching, parallelism
+
+This aligns perfectly with your existing Kafka cluster work and your Data Engineer Associate prep.
+
+3) Certified Kubernetes Administrator (CKA)
+CKA is the most operationally heavy:
+
+Cluster architecture, HA control plane, RBAC
+
+Storage, networking, Ingress/Gateway API
+
+Troubleshooting nodes, workloads, autoscaling
+
+Doing this last ensures you already understand the workloads you’ll deploy (ML models + Kafka apps).
